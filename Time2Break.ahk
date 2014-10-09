@@ -64,7 +64,7 @@ Gdip_SetCompositingMode(GBack1, 1)
 
 Gdip_FillRectangleWithColor(GBack1, transparence<<24, 0, 0, gui1W, gui1H)
 Bitblt(hdc1,0, 0,gui1W,gui1H,hBackDC1,0,0)
-displayTxt("劳憩有度")
+displayTxt("版本：劳憩有度(alpha)")
 
 UpdateLayeredWindow(hgui1, hdc1, ,,,,255)
 
