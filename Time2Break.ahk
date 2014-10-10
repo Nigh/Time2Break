@@ -14,7 +14,7 @@ healthTimeUpLimit:=4500 ;健康时间上限
 healthTimeSet:=3600	;健康时间设定
 healthTimeDownLimit:=-1800
 StatuOld:="resting"
-restJudge:=45000	;休息判定(ms)
+restJudge:=120000	;休息判定(ms)
 
 transparence:=63	;遮罩透明度
 
@@ -89,6 +89,15 @@ Return
 oneSec:
 if(A_TimeIdlePhysical>restJudge){
 	StatuNow:="resting"
+	if(StatuOld="active"){
+		if(TimeNow<0){
+			TimeNow+=recoverTime*unhealthMutil*restJudge//1000
+		}else if(TimeNow<healthTimeUpLimit){
+			TimeNow+=recoverTime*restJudge//1000
+		}
+		if(TimeNow>healthTimeUpLimit)
+			TimeNow:=healthTimeUpLimit
+	}
 }Else{
 	StatuNow:="active"
 }
@@ -108,8 +117,12 @@ if(StatuNow="active"){
 	}else if(TimeNow<healthTimeUpLimit){
 		TimeNow+=recoverTime
 	}
-	if(TimeNow<healthTimeUpLimit)
+	if(TimeNow>=healthTimeUpLimit){
+		TimeNow:=healthTimeUpLimit
 		eventQueue.Insert(func("displayUpdate"))
+	}else if(TimeNow<healthTimeUpLimit){
+		eventQueue.Insert(func("displayUpdate"))
+	}
 }
 StatuOld:=StatuNow
 Return
